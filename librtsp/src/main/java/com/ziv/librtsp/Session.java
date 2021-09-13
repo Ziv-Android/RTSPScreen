@@ -8,6 +8,7 @@ import com.ziv.librtsp.stream.MediaStream;
 import com.ziv.librtsp.stream.Stream;
 import com.ziv.librtsp.stream.audio.AudioQuality;
 import com.ziv.librtsp.stream.audio.AudioStream;
+import com.ziv.librtsp.stream.h264.H264Data;
 import com.ziv.librtsp.stream.video.VideoQuality;
 import com.ziv.librtsp.stream.video.VideoStream;
 
@@ -569,4 +570,10 @@ public class Session {
             return mVideoStream;
     }
 
+    public void putData(H264Data mData) {
+        if (mVideoStream == null) {
+            return;
+        }
+        mVideoStream.putData(mData);
+    }
 }

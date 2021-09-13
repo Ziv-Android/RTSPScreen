@@ -1,9 +1,13 @@
 package com.ziv.librtsp.stream.video.screen;
 
+import android.util.Base64;
+
+import com.ziv.librtsp.stream.h264.H264Data;
 import com.ziv.librtsp.stream.h264.H264Packetizer;
 import com.ziv.librtsp.stream.video.VideoStream;
 
 import java.io.IOException;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * 将经过MediaCodec编码的视频流 封包H.264
@@ -11,11 +15,11 @@ import java.io.IOException;
 public class ScreenStream extends VideoStream {
     public ScreenStream(){
         mPacketizer = new H264Packetizer();
-
     }
 
     public synchronized void start() throws IllegalStateException, IOException {
         if (!mStreaming) {
+            configure();
             super.start();
         }
     }

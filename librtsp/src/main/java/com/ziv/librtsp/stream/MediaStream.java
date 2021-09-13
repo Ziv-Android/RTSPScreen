@@ -31,6 +31,7 @@ import android.util.Log;
 import com.ziv.librtsp.stream.h264.AbstractPacketizer;
 import com.ziv.librtsp.stream.audio.AudioQuality;
 import com.ziv.librtsp.stream.audio.AudioStream;
+import com.ziv.librtsp.stream.h264.H264Data;
 import com.ziv.librtsp.stream.video.VideoQuality;
 import com.ziv.librtsp.stream.video.VideoStream;
 
@@ -38,6 +39,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.util.Random;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * A MediaRecorder that streams what it records using a packetizer from the RTP package.
@@ -343,6 +345,7 @@ public abstract class MediaStream implements Stream {
      */
     public abstract String getSessionDescription();
 
+    public abstract void putData(H264Data data);
     /**
      * Returns the SSRC of the underlying {@link com.ziv.rtsplibrary.rtsp.rtp.RtpSocket}.
      *

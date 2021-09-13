@@ -1,5 +1,7 @@
 package com.ziv.librtsp.config;
 
+import android.media.projection.MediaProjection;
+
 public class Constant {
     public static final String MIME_TYPE = "video/avc";
 
@@ -7,9 +9,10 @@ public class Constant {
     public static final int VIDEO_HEIGHT = 1280;
 
     public static int VIDEO_BITRATE = 2000 * 1000;
-    public static int VIDEO_FRAMERATE = 15;
-    public static int VIDEO_IFRAME_INTER = 5;
+    public static int VIDEO_FRAMERATE = 25;
+    public static int VIDEO_IFRAME_INTER = 1;
 
     public static int DEFAULT_RTSP_PORT = 1234;
 
+    public static MediaProjection mMediaProjection = null;
 }

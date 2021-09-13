@@ -14,7 +14,6 @@
             android:exported="true" >
         </activity>
 
-        <service android:name="com.ziv.librtsp.utils.aide.ScreenRecordService" />
         <service android:name="com.ziv.librtsp.rtsp.RtspService" />
     </application>
 </manifest>

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.ziv.librtsp.stream.MediaStream;
 import com.ziv.librtsp.stream.Stream;
+import com.ziv.librtsp.stream.h264.H264Data;
 import com.ziv.librtsp.stream.video.screen.ScreenInputStream;
 
 import java.io.IOException;
@@ -13,6 +14,7 @@ public abstract class VideoStream extends MediaStream {
 
     protected final static String TAG = "VideoStream";
     protected SharedPreferences mSettings = null;
+    protected ScreenInputStream mInputStream = null;
 
     /**
      * Don't use this class directly.
@@ -64,10 +66,15 @@ public abstract class VideoStream extends MediaStream {
     protected void encodeWithMediaCodec() throws RuntimeException, IOException {
         // The packetizer encapsulates the bit stream in an RTP stream and send it over the network
         mPacketizer.setDestination(mDestination, mRtpPort, mRtcpPort);
-        mPacketizer.setInputStream(new ScreenInputStream());
+        mInputStream = new ScreenInputStream();
+        mPacketizer.setInputStream(mInputStream);
         mPacketizer.start();
 
         mStreaming = true;
+    }
+
+    public void putData(H264Data data) {
+        mInputStream.putH264Data(data);
     }
 
     /**
@@ -96,5 +103,4 @@ public abstract class VideoStream extends MediaStream {
      * @throws IllegalStateException Thrown when {@link Stream#configure()} wa not called.
      */
     public abstract String getSessionDescription() throws IllegalStateException;
-
 }

@@ -73,14 +73,15 @@ public class VideoMediaCodec extends MediaCodecBase {
 
             MediaFormat format = MediaFormat.createVideoFormat(Constant.MIME_TYPE, Constant.VIDEO_WIDTH, Constant.VIDEO_HEIGHT);
             format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
-            format.setInteger(MediaFormat.KEY_BIT_RATE, Constant.VIDEO_BITRATE);
-            format.setInteger(MediaFormat.KEY_FRAME_RATE, Constant.VIDEO_FRAMERATE);
-            format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, Constant.VIDEO_IFRAME_INTER);
+            format.setInteger(MediaFormat.KEY_BIT_RATE, Constant.VIDEO_BITRATE);// 比特率
+            format.setInteger(MediaFormat.KEY_FRAME_RATE, Constant.VIDEO_FRAMERATE);// 帧率
+            format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, Constant.VIDEO_IFRAME_INTER); // K帧间隔
             // -----------------ADD BY XU.WANG 当画面静止时,重复最后一帧--------------------------------------------------------
             format.setLong(MediaFormat.KEY_REPEAT_PREVIOUS_FRAME_AFTER, Constant.VIDEO_BITRATE / Constant.VIDEO_FRAMERATE);
-            format.setInteger(MediaFormat.KEY_BITRATE_MODE, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_CQ);
-            format.setInteger(MediaFormat.KEY_PROFILE, 8); // Profile HIGH　
-            format.setInteger(MediaFormat.KEY_LEVEL, 0x200); // Level 3.1
+            format.setInteger(MediaFormat.KEY_BITRATE_MODE, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR); // 动态帧率
+            format.setInteger(MediaFormat.KEY_COMPLEXITY, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_CBR); // 固定帧率
+            format.setInteger(MediaFormat.KEY_PROFILE, MediaCodecInfo.CodecProfileLevel.AVCProfileHigh); // Profile HIGH　
+            format.setInteger(MediaFormat.KEY_LEVEL, MediaCodecInfo.CodecProfileLevel.AVCLevel31); // Level 3.1
             mEncoder = MediaCodec.createEncoderByType(Constant.MIME_TYPE);
             mEncoder.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
             mSurface = mEncoder.createInputSurface();

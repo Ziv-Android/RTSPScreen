@@ -27,10 +27,14 @@ import android.os.IBinder;
 import android.util.Base64;
 import android.util.Log;
 
+import com.ziv.librtsp.stream.h264.H264Data;
+import com.ziv.librtsp.stream.h264.H264DataCollector;
+import com.ziv.librtsp.utils.LogUtil;
 import com.ziv.librtsp.utils.UriParser;
 import com.ziv.librtsp.Session;
 import com.ziv.librtsp.SessionBuilder;
 import com.ziv.librtsp.config.Constant;
+import com.ziv.librtsp.stream.video.screen.ScreenRecordThread;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -55,7 +59,7 @@ import java.util.regex.Pattern;
  * For each connected client, a Session is instantiated.
  * The Session will start or stop streams according to what the client wants.
  */
-public class RtspService extends Service {
+public class RtspService extends Service implements H264DataCollector {
 
     public final static String TAG = "RtspServer";
 
@@ -106,6 +110,8 @@ public class RtspService extends Service {
     protected WeakHashMap<Session, Object> mSessions = new WeakHashMap<>(2);
 
     private RequestListener mListenerThread;
+    private ScreenRecordThread mScreenRecordThread;
+
     private final IBinder mBinder = new LocalBinder();
     private boolean mRestart = false;
     private final LinkedList<CallbackListener> mListeners = new LinkedList<>();
@@ -118,6 +124,23 @@ public class RtspService extends Service {
 
 
     public RtspService() {
+    }
+
+    private long lastTime = 0L;
+    private int fps = 0;
+    @Override
+    public void collect(H264Data data) {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime > 1000 + lastTime) {
+            LogUtil.d("FPS: (IN) " + fps);
+            fps = 0;
+            lastTime = currentTime;
+        } else {
+            fps++;
+        }
+        for (Session session: mSessions.keySet()) {
+            session.putData(data);
+        }
     }
 
     /**
@@ -199,7 +222,13 @@ public class RtspService extends Service {
      */
     public void start() {
         if (!mEnabled || mRestart) stop();
-        if (mEnabled && mListenerThread == null) {
+        if (mEnabled && mScreenRecordThread == null) {
+            try {
+                mScreenRecordThread = new ScreenRecordThread(getApplicationContext(), Constant.mMediaProjection, this);
+                mScreenRecordThread.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             try {
                 mListenerThread = new RequestListener();
             } catch (Exception e) {
@@ -214,6 +243,15 @@ public class RtspService extends Service {
      * To stop the Android Service you need to call {@link android.content.Context#stopService(Intent)};
      */
     public void stop() {
+        if (mScreenRecordThread != null) {
+            try {
+                mScreenRecordThread.interrupt();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                mScreenRecordThread = null;
+            }
+        }
         if (mListenerThread != null) {
             try {
                 mListenerThread.kill();
@@ -223,6 +261,7 @@ public class RtspService extends Service {
                     }
                 }
             } catch (Exception e) {
+                e.printStackTrace();
             } finally {
                 mListenerThread = null;
             }
@@ -585,6 +624,7 @@ public class RtspService extends Service {
                 /* ********************************************************************************** */
                 else if (request.method.equalsIgnoreCase("TEARDOWN")) {
                     response.status = Response.STATUS_OK;
+                    mSession.syncStop();
                 }
 
                 /* ********************************************************************************** */

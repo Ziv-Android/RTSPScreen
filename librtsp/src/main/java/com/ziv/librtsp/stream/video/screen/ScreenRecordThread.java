@@ -1,10 +1,11 @@
-package com.ziv.librtsp.utils.aide;
+package com.ziv.librtsp.stream.video.screen;
 
 import android.content.Context;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
 import android.media.projection.MediaProjection;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Surface;
 import android.view.WindowManager;
 
@@ -41,7 +42,10 @@ public class ScreenRecordThread extends Thread {
 
     @Override
     public void run() {
-
+        if (mMediaProjection == null) {
+            Log.e(TAG, "ScreenRecordThread: Permission error: 未获得屏幕读取权限");
+            return;
+        }
         DisplayMetrics displayMetrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(displayMetrics);
         screenDensity = displayMetrics.densityDpi;

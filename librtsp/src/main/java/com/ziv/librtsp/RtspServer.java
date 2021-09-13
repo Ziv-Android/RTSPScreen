@@ -9,7 +9,6 @@ import com.ziv.librtsp.rtsp.RtspService;
 import com.ziv.librtsp.utils.NetworkUtil;
 import com.ziv.librtsp.utils.ToastUtil;
 import com.ziv.librtsp.utils.aide.PermissionActivity;
-import com.ziv.librtsp.utils.aide.ScreenRecordService;
 
 public class RtspServer {
     private volatile static boolean mIsRun = false;
@@ -62,8 +61,6 @@ public class RtspServer {
     public void release(Context context) {
         try {
             Context applicationContext = context.getApplicationContext();
-            Intent screenRecordServiceIntent = new Intent(applicationContext, ScreenRecordService.class);
-            applicationContext.stopService(screenRecordServiceIntent);
             Intent rtspServerIntent = new Intent(applicationContext, RtspService.class);
             applicationContext.stopService(rtspServerIntent);
         } catch (Exception e) {

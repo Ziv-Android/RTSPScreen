@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ziv.librtsp.R;
 import com.ziv.librtsp.RtspServer;
+import com.ziv.librtsp.config.Constant;
+import com.ziv.librtsp.rtsp.RtspService;
 import com.ziv.librtsp.utils.LogUtil;
 
 public class PermissionActivity extends AppCompatActivity {
@@ -35,10 +37,9 @@ public class PermissionActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             try {
-                MediaProjection mediaProjection = mMediaProjectionManager.getMediaProjection(resultCode, data);
-                RtspServer.getInstance().setMediaProjection(mediaProjection);
-                Intent intent = new Intent(this, ScreenRecordService.class);
-                startService(intent);
+                Constant.mMediaProjection = mMediaProjectionManager.getMediaProjection(resultCode, data);
+                startService(new Intent(this, RtspService.class));
+                finish();
             } catch (Exception e) {
                 LogUtil.e(TAG, "Start screen record service error: " + e.getMessage());
                 e.printStackTrace();

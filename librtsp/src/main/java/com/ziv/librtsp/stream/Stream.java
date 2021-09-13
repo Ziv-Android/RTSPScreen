@@ -18,6 +18,8 @@
 
 package com.ziv.librtsp.stream;
 
+import com.ziv.librtsp.stream.h264.H264Data;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
@@ -117,6 +119,8 @@ public interface Stream {
      * @throws IllegalStateException Thrown when {@link Stream#configure()} wa not called.
      */
     public String getSessionDescription() throws IllegalStateException;
+
+    public void putData(H264Data data);
 
     public boolean isStreaming();
 
