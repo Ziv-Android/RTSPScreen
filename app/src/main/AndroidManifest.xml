@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ziv.rtspscreen">
+    package="com.zbx.rtspscreen">
 
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RTSPScreen">
         <activity
-            android:name=".MainActivity"
+            android:name="com.zbx.rtspscreen.MainActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:exported="true">
             <intent-filter>
