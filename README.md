@@ -35,6 +35,15 @@ RtspServer.STATE_UNKNOWN = -999;
 ### 停止服务
 RtspServer.getInstance().release(context)
 
+## 分辨率与码率之间的关系
+https://support.google.com/youtube/answer/2853702?hl=zh-Hans&ref_topic=9257892
+240p -> 426*240 -> 300~700Kbps
+360p -> 640*360 -> 400~1000Kbps
+480p -> 854*480 -> 500~2000Kbps
+720p -> 1280*720 -> 1500~4000Kbps
+1080p -> 1920*1080 -> 3000~6000Kbps
+4K -> 3840*2160 -> 13000~34000Kbps
+
 ## 编译aar
 ./gradlew bundleDebugAar
 ./gradlew bundleReleaseAar

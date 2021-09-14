@@ -6,11 +6,13 @@ import android.media.projection.MediaProjection;
 
 import com.zbx.librtsp.config.Constant;
 import com.zbx.librtsp.rtsp.RtspService;
+import com.zbx.librtsp.utils.LogUtil;
 import com.zbx.librtsp.utils.NetworkUtil;
 import com.zbx.librtsp.utils.ToastUtil;
 import com.zbx.librtsp.utils.aide.PermissionActivity;
 
 public class RtspServer {
+    public static final String TAG = "RtspServer";
     public static final int STATE_INIT = 0;
     public static final int STATE_START = 1;
     public static final int STATE_RELEASE = -1;
@@ -32,6 +34,9 @@ public class RtspServer {
 
         private int port = Constant.DEFAULT_RTSP_PORT;
         public Builder setPort(int port) {
+            if (port < 1024 || port > 5000) {
+                LogUtil.e(TAG, "Warning: Port should in [1024, 5000]");
+            }
             this.port = port;
             return this;
         }
@@ -48,6 +53,12 @@ public class RtspServer {
         }
 
         public Builder setFrameRate(int frameRate) {
+            if (frameRate <= 1) {
+                frameRate = 1;
+            }
+            if (frameRate >= 30) {
+                LogUtil.e(TAG, "Warning: Frame rate suggest in [15, 25]");
+            }
             this.frameRate = frameRate;
             return this;
         }
