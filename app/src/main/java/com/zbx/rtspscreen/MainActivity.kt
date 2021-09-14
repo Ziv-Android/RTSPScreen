@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
 
         RtspServer.Builder().setPort(1024).build()
         RtspServer.getInstance()?.start(this)
+
         mIpView?.text = RtspServer.getInstance()?.getRtspAddress(this)
     }
 

@@ -39,6 +39,7 @@ public class PermissionActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             try {
+                LogUtil.d(TAG, "Permission success.");
                 MediaProjection mediaProjection = mMediaProjectionManager.getMediaProjection(resultCode, data);
                 RtspServer.getInstance().setMediaProjection(mediaProjection);
                 startService(new Intent(this, RtspService.class));

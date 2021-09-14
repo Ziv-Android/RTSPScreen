@@ -141,7 +141,9 @@ public class RtspService extends Service implements H264DataCollector {
             fps++;
         }
         for (Session session: mSessions.keySet()) {
-            session.putData(data);
+            if (session != null) {
+                session.putData(data);
+            }
         }
     }
 

@@ -7,6 +7,7 @@ import com.zbx.librtsp.stream.MediaStream;
 import com.zbx.librtsp.stream.Stream;
 import com.zbx.librtsp.stream.h264.H264Data;
 import com.zbx.librtsp.stream.video.screen.ScreenInputStream;
+import com.zbx.librtsp.utils.LogUtil;
 
 import java.io.IOException;
 
@@ -65,6 +66,7 @@ public abstract class VideoStream extends MediaStream {
      */
     protected void encodeWithMediaCodec() throws RuntimeException, IOException {
         // The packetizer encapsulates the bit stream in an RTP stream and send it over the network
+        LogUtil.d(TAG, "MediaCodec create screen input stream.");
         mPacketizer.setDestination(mDestination, mRtpPort, mRtcpPort);
         mInputStream = new ScreenInputStream();
         mPacketizer.setInputStream(mInputStream);
@@ -74,6 +76,10 @@ public abstract class VideoStream extends MediaStream {
     }
 
     public void putData(H264Data data) {
+        if (mInputStream == null) {
+            LogUtil.e(TAG, "Data put error, input stream is null.");
+            return;
+        }
         mInputStream.putH264Data(data);
     }
 
@@ -82,8 +88,6 @@ public abstract class VideoStream extends MediaStream {
      */
     @SuppressLint("NewApi")
     protected void encodeWithMediaCodecMethod1() throws RuntimeException, IOException {
-
-
 
     }
 
