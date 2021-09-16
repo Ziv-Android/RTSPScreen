@@ -20,7 +20,6 @@ public class ScreenRecordThread extends Thread {
     private final static String TAG = "ScreenRecord";
 
     private Surface mSurface;
-    private Context mContext;
     private VirtualDisplay mVirtualDisplay;
     private MediaProjection mMediaProjection;
 
@@ -30,14 +29,14 @@ public class ScreenRecordThread extends Thread {
     private int screenDensity;
 
 
-    public ScreenRecordThread(Context context, MediaProjection mp, H264DataCollector mH264Collector){
-        this.mContext = context;
+    public ScreenRecordThread(Context context, MediaProjection mp, H264DataCollector mH264Collector) {
         this.mMediaProjection = mp;
         wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(displayMetrics);
         screenDensity = displayMetrics.densityDpi;
+
         mVideoMediaCodec = new VideoMediaCodec(wm, context, mH264Collector);
     }
 
@@ -48,22 +47,22 @@ public class ScreenRecordThread extends Thread {
             RtspServer.mServerState = RtspServer.STATE_PERMISSION_DENIED;
             return;
         }
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(displayMetrics);
-        screenDensity = displayMetrics.densityDpi;
-//        mVideoMediaCodec.prepare();
-        mSurface =  mVideoMediaCodec.getSurface();
-        mVirtualDisplay =mMediaProjection.createVirtualDisplay(TAG + "-display", Constant.VIDEO_WIDTH, Constant.VIDEO_HEIGHT, screenDensity,
+        mSurface = mVideoMediaCodec.getSurface();
+        mVirtualDisplay = mMediaProjection.createVirtualDisplay(TAG + "-display", Constant.VIDEO_WIDTH, Constant.VIDEO_HEIGHT, screenDensity,
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
                 mSurface, null, null);
         mVideoMediaCodec.isRun(true);
-        mVideoMediaCodec.getBuffer();
+        try {
+            mVideoMediaCodec.getBuffer();
+        } catch (Exception e) {
+            Log.e(TAG, "Screen mediacodec get buffer error: " + e.getMessage());
+        }
     }
 
     /**
      * 停止
-     * **/
-    public void release(){
+     **/
+    public void release() {
         mVideoMediaCodec.release();
     }
 }

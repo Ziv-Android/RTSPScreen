@@ -130,6 +130,7 @@ public class RtspService extends Service implements H264DataCollector {
 
     private long lastTime = 0L;
     private int fps = 0;
+
     @Override
     public void collect(H264Data data) {
         long currentTime = System.currentTimeMillis();
@@ -140,7 +141,7 @@ public class RtspService extends Service implements H264DataCollector {
         } else {
             fps++;
         }
-        for (Session session: mSessions.keySet()) {
+        for (Session session : mSessions.keySet()) {
             if (session != null) {
                 session.putData(data);
             }
@@ -252,6 +253,7 @@ public class RtspService extends Service implements H264DataCollector {
         if (mScreenRecordThread != null) {
             try {
                 mScreenRecordThread.interrupt();
+                mScreenRecordThread.release();
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -269,6 +271,7 @@ public class RtspService extends Service implements H264DataCollector {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
+                mListenerThread.interrupt();
                 mListenerThread = null;
             }
         }

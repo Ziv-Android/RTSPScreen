@@ -8,7 +8,7 @@ public abstract class MediaCodecBase {
 
     protected MediaCodec mEncoder;
 
-    protected boolean isRun = false;
+    protected volatile boolean isRun = false;
 
     public abstract void prepare();
 

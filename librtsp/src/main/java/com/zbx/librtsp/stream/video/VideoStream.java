@@ -27,6 +27,7 @@ public abstract class VideoStream extends MediaStream {
 
     /**
      * Some data (SPS and PPS params) needs to be stored when {@link #getSessionDescription()} is called
+     *
      * @param prefs The SharedPreferences that will be used to save SPS and PPS parameters
      */
     public void setPreferences(SharedPreferences prefs) {
@@ -46,7 +47,9 @@ public abstract class VideoStream extends MediaStream {
         super.start();
     }
 
-    /** Stops the stream. */
+    /**
+     * Stops the stream.
+     */
     public synchronized void stop() {
 
     }
@@ -55,7 +58,6 @@ public abstract class VideoStream extends MediaStream {
      * Video encoding is done by a MediaRecorder.
      */
     protected void encodeWithMediaRecorder() throws IOException {
-
 
 
     }
@@ -95,7 +97,7 @@ public abstract class VideoStream extends MediaStream {
      * Video encoding is done by a MediaCodec.
      * But here we will use the buffer-to-surface methode
      */
-    @SuppressLint({ "InlinedApi", "NewApi" })
+    @SuppressLint({"InlinedApi", "NewApi"})
     protected void encodeWithMediaCodecMethod2() throws RuntimeException, IOException {
 
 
@@ -104,6 +106,7 @@ public abstract class VideoStream extends MediaStream {
     /**
      * Returns a description of the stream using SDP.
      * This method can only be called after {@link Stream#configure()}.
+     *
      * @throws IllegalStateException Thrown when {@link Stream#configure()} wa not called.
      */
     public abstract String getSessionDescription() throws IllegalStateException;

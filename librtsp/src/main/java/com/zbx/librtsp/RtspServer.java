@@ -3,6 +3,7 @@ package com.zbx.librtsp;
 import android.content.Context;
 import android.content.Intent;
 import android.media.projection.MediaProjection;
+import android.util.Log;
 
 import com.zbx.librtsp.config.Constant;
 import com.zbx.librtsp.rtsp.RtspService;
@@ -33,17 +34,18 @@ public class RtspServer {
         private int frameRate = Constant.VIDEO_FRAME_RATE;
 
         private int port = Constant.DEFAULT_RTSP_PORT;
+
         public Builder setPort(int port) {
             if (port < 1024 || port > 5000) {
-                LogUtil.e(TAG, "Warning: Port should in [1024, 5000]");
+                Log.e(TAG, "Warning: Port should in [1024, 5000]");
             }
             this.port = port;
             return this;
         }
 
         public Builder setResolution(int width, int height) {
-            this.width= width;
-            this.height= height;
+            this.width = width;
+            this.height = height;
             return this;
         }
 
@@ -57,13 +59,13 @@ public class RtspServer {
                 frameRate = 1;
             }
             if (frameRate >= 30) {
-                LogUtil.e(TAG, "Warning: Frame rate suggest in [15, 25]");
+                Log.e(TAG, "Warning: Frame rate suggest in [15, 25]");
             }
             this.frameRate = frameRate;
             return this;
         }
 
-        public void build(){
+        public void build() {
             Constant.VIDEO_WIDTH = width;
             Constant.VIDEO_HEIGHT = height;
 

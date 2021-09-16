@@ -345,6 +345,7 @@ public abstract class MediaStream implements Stream {
     public abstract String getSessionDescription();
 
     public abstract void putData(H264Data data);
+
     /**
      * Returns the SSRC of the underlying {@link com.zbx.rtsplibrary.rtsp.rtp.RtpSocket}.
      *

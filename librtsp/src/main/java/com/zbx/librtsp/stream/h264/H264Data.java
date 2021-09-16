@@ -1,7 +1,8 @@
 package com.zbx.librtsp.stream.h264;
 
-
-
+/**
+ * h264数据类
+ */
 public class H264Data {
 
     public byte[] data;

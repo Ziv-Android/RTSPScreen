@@ -9,7 +9,7 @@ import java.io.IOException;
  * 将经过MediaCodec编码的视频流 封包H.264
  */
 public class ScreenStream extends VideoStream {
-    public ScreenStream(){
+    public ScreenStream() {
         mPacketizer = new H264Packetizer();
     }
 
@@ -31,8 +31,8 @@ public class ScreenStream extends VideoStream {
 
     @Override
     public String getSessionDescription() throws IllegalStateException {
-        return "m=video "+ String.valueOf(getDestinationPorts()[0])+" RTP/AVP 96\r\n" +
+        return "m=video " + String.valueOf(getDestinationPorts()[0]) + " RTP/AVP 96\r\n" +
                 "a=rtpmap:96 H264/90000\r\n" +
-                "a=fmtp:96 packetization-mode=1;profile-level-id=000042"+";sprop-parameter-sets="+";\r\n";
+                "a=fmtp:96 packetization-mode=1;profile-level-id=000042" + ";sprop-parameter-sets=" + ";\r\n";
     }
 }

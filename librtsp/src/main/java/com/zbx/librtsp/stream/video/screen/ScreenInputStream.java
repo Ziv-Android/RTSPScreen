@@ -28,9 +28,9 @@ public class ScreenInputStream extends InputStream {
     public int read(byte[] buffer, int offset, int length) throws IOException {
         int min = 0;
 
-        if(mBuffer == null){
+        if (mBuffer == null) {
             data = h264Queue.poll();
-            if(data == null) return 0;
+            if (data == null) return 0;
             long currentTime = System.currentTimeMillis();
             if (currentTime > 1000 + lastTime) {
                 LogUtil.d("FPS: (OUT) " + fps);
@@ -45,7 +45,7 @@ public class ScreenInputStream extends InputStream {
         }
         min = length < data.data.length - mBuffer.position() ? length : data.data.length - mBuffer.position();
         mBuffer.get(buffer, offset, min);
-        if (mBuffer.position()>=data.data.length) {
+        if (mBuffer.position() >= data.data.length) {
             mBuffer = null;
         }
         return min;
@@ -65,12 +65,12 @@ public class ScreenInputStream extends InputStream {
     }
 
 
-    public long getLastts(){
+    public long getLastts() {
         return ts;
     }
 
     public void putH264Data(H264Data data) {
-        if (h264Queue == null){
+        if (h264Queue == null) {
             h264Queue = new LinkedBlockingDeque<>(queuesize);
         }
         if (h264Queue.size() >= queuesize) {

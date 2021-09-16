@@ -35,24 +35,25 @@ public class VideoMediaCodec extends MediaCodecBase {
     private long timeStamp = 0;
 
     private Context context;
-    private void createfile(){
+
+    private void createfile() {
         FileOutputStream outStream;
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/test1.h264";
         File file = new File(path);
-        if(file.exists()){
+        if (file.exists()) {
             file.delete();
         }
         try {
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
      *
-     * **/
-    public VideoMediaCodec(WindowManager wm, Context context, H264DataCollector mH264Collector){
+     **/
+    public VideoMediaCodec(WindowManager wm, Context context, H264DataCollector mH264Collector) {
         this.mH264Collector = mH264Collector;
         this.context = context;
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -61,18 +62,17 @@ public class VideoMediaCodec extends MediaCodecBase {
         prepare();
     }
 
-    public Surface getSurface(){
+    public Surface getSurface() {
         return mSurface;
     }
 
-    public void isRun(boolean isR){
+    public void isRun(boolean isR) {
         this.isRun = isR;
     }
 
-
     @Override
-    public void prepare(){
-        try{
+    public void prepare() {
+        try {
             LogUtil.d(TAG, "MediaCodec prepare.");
             MediaFormat format = MediaFormat.createVideoFormat(Constant.MIME_TYPE, Constant.VIDEO_WIDTH, Constant.VIDEO_HEIGHT);
             format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
@@ -90,7 +90,7 @@ public class VideoMediaCodec extends MediaCodecBase {
             mSurface = mEncoder.createInputSurface();
             timeStamp = System.currentTimeMillis();
             mEncoder.start();
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -98,22 +98,27 @@ public class VideoMediaCodec extends MediaCodecBase {
     @Override
     public void release() {
         this.isRun = false;
+        LogUtil.d(TAG, "execute release.");
         if (mEncoder != null) {
-            mEncoder.stop();
-            mEncoder.release();
-            mEncoder = null;
+            try {
+                mEncoder.stop();
+                mEncoder.release();
+            } catch (Exception e) {
+            } finally {
+                mEncoder = null;
+            }
         }
-
+        mH264Collector = null;
     }
 
 
     /**
      * 获取h264数据
-     * **/
-    public void getBuffer(){
+     **/
+    public void getBuffer() {
         try {
-            while(isRun){
-                if(mEncoder == null)
+            while (isRun) {
+                if (mEncoder == null)
                     break;
                 if (startTime == 0) {
                     startTime = mBufferInfo.presentationTimeUs * 1000;
@@ -127,7 +132,7 @@ public class VideoMediaCodec extends MediaCodecBase {
                 }
                 int outputBufferIndex  = mEncoder.dequeueOutputBuffer(mBufferInfo, TIMEOUT_USEC);
 //                LogUtil.d("getBuffer outputBufferIndex " + outputBufferIndex);
-                if (outputBufferIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED){
+                if (outputBufferIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
                     MediaFormat outputFormat = mEncoder.getOutputFormat();
                     byte[] AVCDecoderConfigurationRecord = Packager.H264Packager.generateAVCDecoderConfigurationRecord(outputFormat);
                     int packetLen = Packager.FLVPackager.FLV_VIDEO_TAG_LENGTH +
@@ -142,32 +147,32 @@ public class VideoMediaCodec extends MediaCodecBase {
                             finalBuff, Packager.FLVPackager.FLV_VIDEO_TAG_LENGTH, AVCDecoderConfigurationRecord.length);
 
                     H264Data data = new H264Data(finalBuff, 1, 10);
-                    if (mH264Collector != null){
+                    if (mH264Collector != null) {
                         mH264Collector.collect(data);
                     }
                 }
 
-                while (outputBufferIndex >= 0){
+                while (outputBufferIndex >= 0) {
                     ByteBuffer outputBuffer = mEncoder.getOutputBuffer(outputBufferIndex);
 //                    MediaFormat bufferFormat = mEncoder.getOutputFormat(outputBufferIndex);
 
                     byte[] outData = new byte[mBufferInfo.size];
                     outputBuffer.get(outData);
-                    if(mBufferInfo.flags == MediaCodec.BUFFER_FLAG_CODEC_CONFIG){
+                    if (mBufferInfo.flags == MediaCodec.BUFFER_FLAG_CODEC_CONFIG) {
                         configbyte = new byte[mBufferInfo.size];
                         configbyte = outData;
-                    }else if(mBufferInfo.flags == MediaCodec.BUFFER_FLAG_KEY_FRAME){
+                    } else if (mBufferInfo.flags == MediaCodec.BUFFER_FLAG_KEY_FRAME) {
                         // 每一帧的视频数据
                         byte[] keyframe = new byte[mBufferInfo.size + configbyte.length];
                         System.arraycopy(configbyte, 0, keyframe, 0, configbyte.length);
                         System.arraycopy(outData, 0, keyframe, configbyte.length, outData.length);
-                        H264Data data = new H264Data(keyframe, 1, mBufferInfo.presentationTimeUs*1000);
-                        if (mH264Collector != null){
+                        H264Data data = new H264Data(keyframe, 1, mBufferInfo.presentationTimeUs * 1000);
+                        if (mH264Collector != null) {
                             mH264Collector.collect(data);
                         }
-                    }else{
-                        H264Data data = new H264Data(outData, 2, mBufferInfo.presentationTimeUs*1000);
-                        if (mH264Collector != null){
+                    } else {
+                        H264Data data = new H264Data(outData, 2, mBufferInfo.presentationTimeUs * 1000);
+                        if (mH264Collector != null) {
                             mH264Collector.collect(data);
                         }
                     }
@@ -175,18 +180,10 @@ public class VideoMediaCodec extends MediaCodecBase {
                     outputBufferIndex = mEncoder.dequeueOutputBuffer(mBufferInfo, TIMEOUT_USEC);
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        try {
-            if (mEncoder != null) {
-                mEncoder.stop();
-                mEncoder.release();
-            }
-            mEncoder = null;
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        release();
     }
 
 }

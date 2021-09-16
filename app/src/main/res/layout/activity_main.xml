@@ -46,9 +46,10 @@
     <!--        android:layout_height="wrap_content"-->
     <!--        app:layout_constraintTop_toTopOf="parent"/>-->
 
-<!--    <Button-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:onClick="startOrStop"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="startOrStop"
+        android:text="start"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
