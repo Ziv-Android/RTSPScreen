@@ -1,10 +1,13 @@
 # RTSP Model封装
 
 ## 基本功能介绍
-将Android设备屏幕数据通过RTSP服务发送至外部，同一局域网环境下通过支持RTSP客户端播放。
+基于libstreaming封装，将Android设备屏幕数据通过RTSP服务发送至外部，同一局域网环境下通过支持RTSP客户端播放。
 
 ### 使用环境
 Android 5.0以上
+
+### 播放客户端
+推荐使用ffplay，偷懒使用VLC播放器（有大坑）
 
 ## 功能API
 ### 获取服务地址
@@ -139,3 +142,22 @@ D/RtspServer: RTSP/1.0 400 Bad Request
     Server: RTSP Server
     Content-Length: 0
 ```
+
+System.err: android.media.MediaCodec$CodecException: Failed to initialize OMX.qcom.video.encoder.avc, error 0xfffffff4
+错误原因： 创建MC示例超限；
+
+ACodec: [OMX.allwinner.video.encoder.avc] ERROR(0x80001009)
+错误原因：
+塞了错误的数据
+入队Frame数据时用了flag（BUFFER_FLAG_CODEC_CONFIG），但是入队的数据中没带sps，pps。或者相反，没用这个flag，数据中带了sps，pps。
+
+Failed to initialize video/avc, error 0xfffffff4
+错误原因：MediaCodec没有调用release方法
+
+Failed to initialize video/avc, error 0xfffffffe
+错误原因：MediaCodec.createByCodecName 只能传详细的编解码器名称(如：OMX.qcom.video.encoder.avc);不能传类型如：video/avc;
+
+ACodec: [OMX.rk.video_encoder.avc] stopping checking profiles after 32: 8/1
+OMX.rk.video_encoder.avc] configureCodec returning error -1010
+android.media.MediaCodec$CodecException: Error 0xfffffc0e
+错误原因：创建编码器时，不支持hightProfile属性；

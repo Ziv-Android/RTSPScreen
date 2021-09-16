@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
     private var mCamera: Camera? = null
     private var mParameters: Camera.Parameters? = null
-    private var mCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT
+    private var mCameraId = Camera.CameraInfo.CAMERA_FACING_BACK
     private var mWidth = 320
     private var mHeight = 480
     private var mOrientation = 0
@@ -217,7 +217,7 @@ class MainActivity : AppCompatActivity() {
         mOrientation = result
         //相机预览方向
         //相机预览方向
-        mCamera!!.setDisplayOrientation(result)
+        mCamera?.setDisplayOrientation(result)
     }
 
     private fun initParameters(camera: Camera?) {
