@@ -80,7 +80,7 @@ public class VideoMediaCodec extends MediaCodecBase {
             format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
             format.setInteger(MediaFormat.KEY_BIT_RATE, Constant.VIDEO_BITRATE);// 比特率
             format.setInteger(MediaFormat.KEY_FRAME_RATE, Constant.VIDEO_FRAME_RATE);// 帧率
-            format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, Constant.VIDEO_IFRAME_INTER); // K帧间隔
+            format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, Constant.VIDEO_IFRAME_INTER); // K帧间隔时间 单位s
             // -----------------ADD BY XU.WANG 当画面静止时,重复最后一帧--------------------------------------------------------
             format.setLong(MediaFormat.KEY_REPEAT_PREVIOUS_FRAME_AFTER, Constant.VIDEO_BITRATE / Constant.VIDEO_FRAME_RATE);
             format.setInteger(MediaFormat.KEY_BITRATE_MODE, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR); // 动态帧率

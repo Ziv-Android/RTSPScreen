@@ -135,7 +135,7 @@ D/RtspServer: RTSP/1.0 200 OK
 I/RtspServer: Client disconnected
 ```
 
-VLC播放器异常终止后再次播放错误，需要结束所有VLC相关进程后，重试
+数据流输入输出均正常的前提下，VLC播放器异常终止后再次播放错误，需要结束所有VLC相关进程后，重试
 ```
 E/RtspServer: Error parsing CSeq: Attempt to read from field 'java.util.HashMap com.zbx.librtsp.rtsp.RtspService$Request.headers' on a null object reference
 D/RtspServer: RTSP/1.0 400 Bad Request
@@ -158,6 +158,16 @@ Failed to initialize video/avc, error 0xfffffffe
 错误原因：MediaCodec.createByCodecName 只能传详细的编解码器名称(如：OMX.qcom.video.encoder.avc);不能传类型如：video/avc;
 
 ACodec: [OMX.rk.video_encoder.avc] stopping checking profiles after 32: 8/1
-OMX.rk.video_encoder.avc] configureCodec returning error -1010
+ACodec: [OMX.rk.video_encoder.avc] configureCodec returning error -1010
 android.media.MediaCodec$CodecException: Error 0xfffffc0e
 错误原因：创建编码器时，不支持hightProfile属性；
+
+ACodec: [OMX.rk.video_encoder.avc] configureCodec returning error -38
+android.media.MediaCodec$CodecException: Error 0x80001001
+错误原因：MediaFormat.KEY_BITRATE_MODE设置的值，当前设备不支持
+
+选择支持颜色格式为yuv420p的编码器时， KEY_I_FRAME_INTERVAL 设置无效
+选择支持颜色格式为yuv420sp的编码器时，KEY_I_FRAME_INTERVAL 设置有效
+
+// 判断处处数据是否为关键帧
+boolean isKeyFrame = (bufferInfo.flags & MediaCodec.BUFFER_FLAG_KEY_FRAME) != 0;
