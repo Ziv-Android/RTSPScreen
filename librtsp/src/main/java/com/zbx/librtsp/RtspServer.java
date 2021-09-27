@@ -50,6 +50,9 @@ public class RtspServer {
         }
 
         public Builder setBitRate(int bitRate) {
+            if (bitRate < 300 * 1000) {
+                Log.e(TAG, "Warning: Bitrate suggest 300000+");
+            }
             this.bitRate = bitRate;
             return this;
         }
